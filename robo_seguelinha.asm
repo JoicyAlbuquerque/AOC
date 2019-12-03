@@ -17,7 +17,7 @@
 	set_cores:
 
 		lw $s5, black
-		lw $s6, blue
+		lw $s6, white
 		lw $s7, orange
 		jr $ra
 		
@@ -51,7 +51,7 @@
 		li $a1, 80
 		li $v0, 42 #random
 		syscall
-		add $a0, $a0, 7
+		add $a0, $a0, 10
 		move $s0, $a0
 		jr $ra
 		
@@ -161,6 +161,11 @@
 				addi $t2, $zero, 0
 				
 	anda_robo:
+		beq $t2, 500, anda_robo2
+		add $t2, $t2, 1
+		j anda_robo
+		anda_robo2:
+		add $t2, $zero, 0
 		add $s3, $t1, $zero
 		add $t6, $zero, $t0
 		addi $t0, $t0, 4
@@ -168,51 +173,69 @@
 		sw $s6, ($t0)
 		beq $t0,$s1,segue_reta
 		beq $t0, $s2, segue_reta
-		beq $t0,$s3, reinicia
 		j anda_robo
 		
-	reinicia:
-		add $t0, $zero, $t1
-		add $t6, $zero, $t0
-		addi $t0, $t0, 4
-		sw $zero, ($t6)
-		sw $s6, ($t0)
-		beq $t0, $s1 ,segue_reta
-		beq $t0, $s2, segue_reta
 		
 	segue_reta:
+		add $t2, $zero, 0
 		beq $t4, 4, segue_4
 		beq $t4, 512, segue_512
+		
 	segue_4:
+		beq $t2, 10000, segue_reta4.1
+		add $t2, $t2, 1
+		j segue_4
+		segue_reta4.1:
 		add $t6, $zero, $t0
 		addi $t0, $t0, 4
 		sw $s7, ($t6)
 		sw $s6, ($t0)
+		add $t2, $zero, 0
 		beq $t0, $s2, segue4_linha2
 		j segue_4
 
 	segue4_linha2:
+		
+		beq $t2, 10000, segue4_linha2.1
+		add $t2, $t2, 1
+		j segue4_linha2
+		segue4_linha2.1:
 		add $t6, $zero, $t0
 		addi $t0, $t0, 512
 		sw $s7, ($t6)
 		sw $s6, ($t0)
+		add $t2, $zero, 0
 		beq $t0, $s4, sair
 		j segue4_linha2
 		
 	segue_512:
+		
+		beq $t2, 10000, segue512
+		add $t2, $t2, 1
+		j segue_512
+		segue512:
 		add $t6, $zero, $t0
 		addi $t0, $t0, 512
 		sw $s7, ($t6)
 		sw $s6, ($t0)
+		add $t2, $zero, 0
 		beq $t0, $s2, segue512_linha2
+		
 		j segue_512
 
 	segue512_linha2:
+		
+		beq $t2, 10000, segue512_linha2.1
+		add $t2, $t2, 1
+		j segue512_linha2
+		segue512_linha2.1:
 		add $t6, $zero, $t0
 		addi $t0, $t0, 4
 		sw $s7, ($t6)
 		sw $s6, ($t0)
+		add $t2, $zero, 0
 		beq $t0, $s4, sair
+		
 		j segue512_linha2		
 	sair:
 		li $v0,10 
@@ -225,5 +248,5 @@
 		jal desenha
 		jal desenharobo
 		jal anda_robo
-		
+
 
